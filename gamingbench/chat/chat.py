@@ -4,6 +4,8 @@ from langchain.chat_models import ChatOpenAI, ChatAnyscale
 from langchain_community.chat_models import ChatOpenAI, ChatAnyscale
 from langchain_community.llms import DeepInfra
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
+from langchain_community.llms.llamafile import Llamafile
+from langchain_community.chat_models.ollama import ChatOllama
 
 
 def write_to_file(file_path, content):
@@ -12,7 +14,13 @@ def write_to_file(file_path, content):
 
 
 def chat_llm(messages, model, temperature, max_tokens, n, timeout, stop, return_tokens=False, chat_seed=0):
-    if model.__contains__("gpt"):
+    if model.__contains__("ollama"):
+        iterated_query = True
+        chat = ChatOllama(model="llama2")
+    elif model.__contains__("llamafile"):
+        iterated_query = True
+        chat = Llamafile()
+    elif model.__contains__("gpt"):
         iterated_query = False
         chat = ChatOpenAI(model_name=model,
                           openai_api_key=os.environ['OPENAI_API_KEY'],
@@ -60,8 +68,8 @@ def chat_llm(messages, model, temperature, max_tokens, n, timeout, stop, return_
             responses = [
                 chat_gen.message.content for chat_gen in generations.generations[0]]
             response_list.append(responses[0])
-            completion_tokens = generations.llm_output['token_usage']['completion_tokens']
-            prompt_tokens = generations.llm_output['token_usage']['prompt_tokens']
+            completion_tokens = 0 #generations.llm_output['token_usage']['completion_tokens']
+            prompt_tokens = 0 #generations.llm_output['token_usage']['prompt_tokens']
             total_completion_tokens += completion_tokens
             total_prompt_tokens += prompt_tokens
         responses = response_list
@@ -72,8 +80,8 @@ def chat_llm(messages, model, temperature, max_tokens, n, timeout, stop, return_
             stop] if stop is not None else None)
         responses = [
             chat_gen.message.content for chat_gen in generations.generations[0]]
-        completion_tokens = generations.llm_output['token_usage']['completion_tokens']
-        prompt_tokens = generations.llm_output['token_usage']['prompt_tokens']
+        completion_tokens = 0 #generations.llm_output['token_usage']['completion_tokens']
+        prompt_tokens = 0 #generations.llm_output['token_usage']['prompt_tokens']
 
     return {
         'generations': responses,
