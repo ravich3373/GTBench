@@ -4,7 +4,7 @@ from langchain.chat_models import ChatOpenAI, ChatAnyscale
 from langchain_community.chat_models import ChatOpenAI, ChatAnyscale
 from langchain_community.llms import DeepInfra
 from langchain.schema import SystemMessage, HumanMessage, AIMessage
-from langchain_community.llms.llamafile import Llamafile
+#from langchain_community.llms.llamafile import Llamafile
 from langchain_community.chat_models.ollama import ChatOllama
 
 
