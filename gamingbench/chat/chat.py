@@ -17,7 +17,10 @@ def chat_llm(messages, model, temperature, max_tokens, n, timeout, stop, return_
     if model.__contains__("ollama"):
         ollama_model = model.split("-")[1]
         iterated_query = True
-        chat = ChatOllama(model=ollama_model)
+        if "llama3" in ollama_model:
+            chat = ChatOllama(model=ollama_model, stop=["<|eot_id|>"])
+        else:
+            chat = ChatOllama(model=ollama_model)
     elif model.__contains__("llamafile"):
         iterated_query = True
         chat = Llamafile()
