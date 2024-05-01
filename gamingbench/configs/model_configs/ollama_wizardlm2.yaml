@@ -1,4 +1,4 @@
-llm_model_path: ollama
+llm_model_path: ollama-wizardlm2
 max_tokens: 1024
 timeout: 120
 temperature: 0.2
