@@ -16,7 +16,7 @@ def write_to_file(file_path, content):
 def chat_llm(messages, model, temperature, max_tokens, n, timeout, stop, return_tokens=False, chat_seed=0):
     if model.__contains__("ollama"):
         iterated_query = True
-        chat = ChatOllama(model="llama2")
+        chat = ChatOllama(model="llama3")
     elif model.__contains__("llamafile"):
         iterated_query = True
         chat = Llamafile()

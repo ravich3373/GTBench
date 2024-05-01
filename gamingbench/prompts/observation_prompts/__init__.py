@@ -29,3 +29,7 @@ mapping = {
 def construct_observation_prompt(observations, environment_name):
 
     return mapping[environment_name].construct_observation_prompt(observations)
+
+def construct_react_observation_prompt(observations, environment_name):
+
+    return mapping[environment_name].construct_react_observation_prompt(observations)

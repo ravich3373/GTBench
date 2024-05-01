@@ -1,5 +1,6 @@
 
 from gamingbench.agents.prompt_agent import PromptAgent
+from gamingbench.agents.react_agent import ReactAgent
 from gamingbench.agents.cot_agent import CoTAgent
 from gamingbench.agents.sc_cot_agent import SCCoTAgent
 from gamingbench.agents.tot_agent import ToTAgent
