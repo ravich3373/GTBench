@@ -184,22 +184,74 @@ class OpenSpielGame:
                         agent.inform_action(self.env, player_idx, game_action)
 
         results = self.env.returns()
+        # TODO: Ravi: only works with tictactoe
+        #player_idx = self.env.current_player()
+        # init step
+        alphallm = False
+        for idx, agent in enumerate(agent_list):
+            if agent.__class__.__name__ == "AlphaLLMAgent":
+                alphallm = True
+                alphaidx = idx
+                break
+        if alphallm:
+            _step = Step(agent_list[alphaidx].agent_name)
+            _step.set_model_name(model_list[alphaidx].nick_name)
+
+            try:
+                observations = self.env.observation_string()
+            except Exception as e:
+                observations = str(self.env)
+            
+            observation_dict = self.openspiel_observation_to_dict(
+                alphaidx, observations)
+            observation_dict['state'] = self.env
+
+            legal_actions = self.env.legal_actions(alphaidx)
+            observation_dict['openspiel_legal_actions'] = legal_actions
+            valid_action = [self.env.action_to_string(
+                a) for a in legal_actions]
+            valid_action = self.openspiel_action_to_agent(valid_action)
+
+            observation_dict['legal_moves'] = valid_action
+            observation_dict['env_name'] = self.game_name
+        
+        # ravi end
         if results[0] > results[1]:
             # player 0 wins
             winner_name = agent_list[0].agent_name + \
                 "_"+agent_list[0].model.nick_name
             _match.loser_score = results[1]
             _match.winner_score = results[0]
+            # ravi start
+            if agent_list[0].agent_name == "AlphaLLMAgent":
+                status = "win"
+            else:
+                status = "loss"
+            # en
         elif results[1] > results[0]:
             # player 1 wins
             winner_name = agent_list[1].agent_name + \
                 "_"+agent_list[1].model.nick_name
             _match.loser_score = results[0]
             _match.winner_score = results[1]
+            
+            if agent_list[1].agent_name == "AlphaLLMAgent":
+                status = "win"
+            else:
+                status = "loss"
         else:
             # draw
             winner_name = ""
+            status = "draw"
+        # ravi start
+        if alphallm:
+            query_list = agent_list[alphaidx].conclude(
+                            observation_dict, status)
+            for q in query_list:
+                _step.add_query(q)
 
+            _match.add_step(_step)
+        # end
         _match.set_winner(winner_name)
         tracker.add_match(_match)
         if _match.winner != "":

@@ -25,6 +25,52 @@ class AlphaLLMAgent(BaseAgent):
         self.infer_graph = ""
         self.opp_next_pred = ""
 
+    def conclude(self, observations, status):
+        self.logger.info('-' * 20 + 'AlphaLLMAgent Begin Conclusion' + '-' * 20)
+        env_name = observations['env_name']
+        system_prompt = construct_system_prompt(env_name)
+        observation_prompt = construct_observation_prompt(observations, environment_name=env_name)
+        step_instruct = construct_step_prompt(observations)
+        step_prompt = step_instruct['prompt']
+        step_regex = step_instruct['regex']
+        stop_signs = step_instruct['stop_signs']
+
+        query_list = []
+        ys = [""]
+        x = self.construct_init_messages(system_prompt, observation_prompt + '\n' + step_prompt)
+        # learning
+        # ravi
+        opponent_move = ""
+        if len(observations["opponent_moves"]) > 0:
+            opponent_move = observations['opponent_moves'][-1]
+        # ravi
+        if self.infer_graph and opponent_move != self.opp_next_pred:
+            learn_x = x[-1]['content'] = '\n' + "Previous game state:\n" + self.prev_obs + "\n" 
+
+            learn_x += "Game Knowledge Gained:\n" + self.learnings + "\n"
+            learn_x += "Game Progression Expected by LLM including opponent's Moves:\n" + self.infer_graph + f"\nActual Move of opponent:\n{opponent_move}\n"
+            if status == "win":
+                learn_x += "You won the game. "
+            elif status == "loss":
+                learn_x += "The opponent won the game. "
+            else:  # draw
+                learn_x += "The game is a draw. "
+
+            learn_x += "Extract concise knowledge from this game that you can use to improve yourself. Combine this knowledge with the already gained knowledge from 'Game Knowledge Gained:' section and output. "
+            learn_x += "This knowledge should strictly follow the output format:\n New Knowledge Begin:\n write knowledge gained here. \nNew Knowledge End\n"
+            
+            x[-1]["content"] = learn_x
+            new_ks = [self._get_samples(x, y, self.n_generate_sample, stop=None) for y in ys]
+            query_list += [query[1] for query in new_ks]
+            new_ks = [new_k[0] for new_k in new_ks]
+            # extract knowledge
+            new_k = new_ks[0][0].split("\n")[1]
+            if len(new_k) > 0:
+                self.learnings = new_k.strip()
+        
+        return query_list
+        
+    
     def step(self, observations):
         self.logger.info('-' * 20 + 'AlphaLLMAgent Begin' + '-' * 20)
         # we follow the official tot implementation: https://github.com/princeton-nlp/tree-of-thought-llm/blob/master/src/tot/methods/bfs.py
@@ -64,7 +110,7 @@ class AlphaLLMAgent(BaseAgent):
                 
                 x[-1]["content"] = learn_x
                 new_ks = [self._get_samples(x, y, self.n_generate_sample, stop=stop_signs[step]) for y in ys]
-                #k_list += [query[1] for query in new_ys]
+                query_list += [query[1] for query in new_ks]
                 new_ks = [new_k[0] for new_k in new_ks]
                 # extract knowledge
                 new_k = new_ks[0][0].split("\n")[1]

@@ -26,7 +26,7 @@ def construct_observation_prompt(observations):
     opponent_moves = observations.get('opponent_moves', [])
     self_moves = observations.get('self_moves', [])
 
-    assert len(legal_moves) != 0
+    #assert len(legal_moves) != 0 ravi
 
     if len(opponent_moves) != 0 or len(self_moves) != 0:
         if len(opponent_moves) == 0:
