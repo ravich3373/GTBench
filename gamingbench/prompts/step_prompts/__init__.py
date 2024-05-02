@@ -2,7 +2,7 @@
 from gamingbench.prompts.step_prompts import prompt_agent
 from gamingbench.prompts.step_prompts import cot_agent
 from gamingbench.prompts.step_prompts import tot_agent
-
+from gamingbench.prompts.step_prompts import alphallm_agent
 # maps
 mapping = {
     'promptagent': prompt_agent

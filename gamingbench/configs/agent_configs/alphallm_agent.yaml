@@ -1,0 +1,14 @@
+
+# base config
+agent_name: AlphaLLMAgent
+num_generations: 1
+majority_vote: False
+# tot configs
+task_steps: 3
+method_generate: sample
+method_evaluate: vote
+method_select: greedy
+n_generate_sample: 1
+n_evaluate_sample: 1
+n_select_sample: 1
+prompt_sample: standard # or cot
