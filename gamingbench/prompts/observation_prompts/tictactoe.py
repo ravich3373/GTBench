@@ -7,11 +7,11 @@ Each move is represented by a string consisting of two parts: the column (C) and
 
 def _construct_react_head_prompt():
     example1 = """Your opponent has finished actions: <C2R2>, <C1R3>, <C3R3>. You have finished actions: <C1R2>, <C3R1>.\n Currently, the legal actions are <C1R1>, <C2R1>, <C2R3>, <C3R2>.
-Thought: I need to block my opponent from winning. He has two in row 3(<C1R3>, <C3R3>) and two diagonally(<C2R2>, <C3R3>). With my next move I can choose <C1R1> to block the diagonal or choose <C2R3> to block row 3. I can only choose one so I'll choose <C2R3>.
+Thought: I need to gain advantage while blocking my opponent from winning. He has two in row 3(<C1R3>, <C3R3>) and two diagonally(<C2R2>, <C3R3>). With my next move I can choose <C1R1> to block the diagonal or choose <C2R3> to block row 3. I can only choose one so I'll choose <C2R3>.
 Action:
 <C2R3>"""
     example2 = """Your opponent has finished actions: <C3R1>, <C3R3>, <C1R2>, <C2R1>. You have finished actions: <C2R2>, <C3R2>, <C2R3>.\n Currently, the legal actions are <C1R1>, <C1R3>.
-Thought: I need to block my opponent from winning. He has two in row 1(<C2R1>, <C3R1>). With my next move I should choose <C1R1> to block row 1 for my opponent.
+Thought: I need to gain advantage while blocking my opponent from winning. He has two in row 1(<C2R1>, <C3R1>). With my next move I should choose <C1R1> to block row 1 for my opponent.
 Action:
 <C1R1>"""
     return _construct_head_prompt() + f"Here are two examples.\n {example1}\n {example2}\nHere is the task.\n"

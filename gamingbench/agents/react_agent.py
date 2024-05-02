@@ -1,8 +1,9 @@
 
 from gamingbench.agents.base_agent import BaseAgent
-from gamingbench.prompts.step_prompts.prompt_agent import construct_step_prompt
+#from gamingbench.prompts.step_prompts.prompt_agent import construct_step_prompt
 from gamingbench.prompts.observation_prompts import construct_react_observation_prompt
 from gamingbench.prompts.system_prompts import construct_system_prompt
+from gamingbench.prompts.step_prompts.cot_agent import construct_step_prompt
 
 
 class ReactAgent(BaseAgent):
