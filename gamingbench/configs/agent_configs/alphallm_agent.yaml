@@ -4,7 +4,7 @@ agent_name: AlphaLLMAgent
 num_generations: 1
 majority_vote: False
 # tot configs
-task_steps: 3
+task_steps: 1
 method_generate: sample
 method_evaluate: vote
 method_select: greedy
